@@ -3,14 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
-	"net/http"
+	"log"
 	"path/filepath"
 	"strconv"
 )
 
 var (
-	port int
-	host string
+	port  int
+	host  string
+	cache bool
 )
 
 func init() {
@@ -27,18 +28,26 @@ func init() {
 	)
 	flag.StringVar(&host, "host", DEFAULT_HOST, HOST_USAGE)
 	flag.StringVar(&host, "h", DEFAULT_HOST, HOST_USAGE)
+
+	const (
+		DEFAULT_CACHE = false
+		CACHE_USAGE   = "enable caching"
+	)
+	flag.BoolVar(&cache, "enable-caching", DEFAULT_CACHE, CACHE_USAGE)
+	flag.BoolVar(&cache, "c", DEFAULT_CACHE, CACHE_USAGE)
 }
 
 func main() {
 	flag.Parse()
 
 	directory := flag.Arg(0)
-	absPath, err := filepath.Abs(directory)
+	dirPath, err := filepath.Abs(directory)
 	if err != nil {
 		panic(err)
 	}
 
-	location := host + ":" + strconv.Itoa(port)
-	fmt.Printf("Serving '%s/' on 'http://%s'\n", absPath, location)
-	panic(http.ListenAndServe(location, http.FileServer(http.Dir(absPath))))
+	address := host + ":" + strconv.Itoa(port)
+
+	fmt.Printf("Serving '%s/' on 'http://%s'\n", dirPath, address)
+	log.Fatal(ServeDir(dirPath, address, cache))
 }
