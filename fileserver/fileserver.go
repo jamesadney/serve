@@ -1,4 +1,4 @@
-package main
+package fileserver
 
 import (
 	"net/http"

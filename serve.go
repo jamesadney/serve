@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/jamesadney/serve/fileserver"
 	"log"
 	"path/filepath"
 	"strconv"
@@ -49,5 +50,5 @@ func main() {
 	address := host + ":" + strconv.Itoa(port)
 
 	fmt.Printf("Serving '%s/' on 'http://%s'\n", dirPath, address)
-	log.Fatal(ServeDir(dirPath, address, cache))
+	log.Fatal(fileserver.ServeDir(dirPath, address, cache))
 }
