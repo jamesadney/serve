@@ -9,25 +9,25 @@ import (
 )
 
 var (
-	port  int
 	host  string
+	port  int
 	cache bool
 )
 
 func init() {
-	const (
-		DEFAULT_PORT = 8000
-		PORT_USAGE   = "port to run server on"
-	)
-	flag.IntVar(&port, "port", DEFAULT_PORT, PORT_USAGE)
-	flag.IntVar(&port, "p", DEFAULT_PORT, PORT_USAGE)
-
 	const (
 		DEFAULT_HOST = "127.0.0.1"
 		HOST_USAGE   = "host to run server on"
 	)
 	flag.StringVar(&host, "host", DEFAULT_HOST, HOST_USAGE)
 	flag.StringVar(&host, "h", DEFAULT_HOST, HOST_USAGE)
+
+	const (
+		DEFAULT_PORT = 8000
+		PORT_USAGE   = "port to run server on"
+	)
+	flag.IntVar(&port, "port", DEFAULT_PORT, PORT_USAGE)
+	flag.IntVar(&port, "p", DEFAULT_PORT, PORT_USAGE)
 
 	const (
 		DEFAULT_CACHE = false
