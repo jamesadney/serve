@@ -11,22 +11,17 @@ import (
 // `cache`: If false, the browser is sent headers to prevent it from caching
 // content.
 func ServeDir(dir, address string, cache bool) error {
-	fs := NewFileServer(http.Dir(dir), cache)
-	return http.ListenAndServe(address, fs)
-}
-
-type FileServer struct {
-	handler http.Handler
-	cache   bool
-}
-
-func NewFileServer(dir http.FileSystem, cache bool) *FileServer {
-	return &FileServer{http.FileServer(dir), cache}
-}
-
-func (s *FileServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if !s.cache {
-		w.Header().Set("Cache-Control", "no-cache")
+	if cache {
+		http.Handle("/", http.FileServer(http.Dir(dir)))
+	} else {
+		http.Handle("/", disableCache(http.FileServer(http.Dir(dir))))
 	}
-	s.handler.ServeHTTP(w, r)
+	return http.ListenAndServe(address, nil)
+}
+
+func disableCache(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		rw.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+		h.ServeHTTP(rw, r)
+	})
 }
