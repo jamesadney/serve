@@ -1,4 +1,4 @@
-package fileserver
+package main
 
 import (
 	"net/http"
@@ -26,10 +26,7 @@ func NewFileServer(dir http.FileSystem, cache bool) *FileServer {
 
 func (s *FileServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if !s.cache {
-		headers := w.Header()
-		headers.Set("Cache-Control", "no-cache, no-store, must-revalidate")
-		headers.Set("Pragma", "no-cache")
-		headers.Set("Expires", "0")
+		w.Header().Set("Cache-Control", "no-cache")
 	}
 	s.handler.ServeHTTP(w, r)
 }
