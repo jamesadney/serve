@@ -5,39 +5,12 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
-	"strconv"
 )
-
-var (
-	host  string
-	port  int
-	cache bool
-)
-
-func init() {
-	const (
-		DEFAULT_HOST = "127.0.0.1"
-		HOST_USAGE   = "host to run server on"
-	)
-	flag.StringVar(&host, "host", DEFAULT_HOST, HOST_USAGE)
-	flag.StringVar(&host, "h", DEFAULT_HOST, HOST_USAGE)
-
-	const (
-		DEFAULT_PORT = 8000
-		PORT_USAGE   = "port to run server on"
-	)
-	flag.IntVar(&port, "port", DEFAULT_PORT, PORT_USAGE)
-	flag.IntVar(&port, "p", DEFAULT_PORT, PORT_USAGE)
-
-	const (
-		DEFAULT_CACHE = false
-		CACHE_USAGE   = "enable caching"
-	)
-	flag.BoolVar(&cache, "enable-caching", DEFAULT_CACHE, CACHE_USAGE)
-	flag.BoolVar(&cache, "c", DEFAULT_CACHE, CACHE_USAGE)
-}
 
 func main() {
+	port := flag.Int("p", 8080, "port to listen on")
+	cache := flag.Bool("c", false, "enable caching")
+
 	flag.Parse()
 
 	directory := flag.Arg(0)
@@ -46,8 +19,8 @@ func main() {
 		panic(err)
 	}
 
-	address := host + ":" + strconv.Itoa(port)
+	address := fmt.Sprintf(":%d", *port)
 
 	fmt.Printf("Serving '%s/' on 'http://%s'\n", dirPath, address)
-	log.Fatal(ServeDir(dirPath, address, cache))
+	log.Fatal(ServeDir(dirPath, address, *cache))
 }
