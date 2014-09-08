@@ -21,6 +21,12 @@ func main() {
 
 	address := fmt.Sprintf(":%d", *port)
 
-	fmt.Printf("Serving '%s/' on 'http://%s'\n", dirPath, address)
+	ip, err := externalIP()
+	if err != nil {
+		fmt.Println(err)
+		ip = "127.0.0.1"
+	}
+
+	fmt.Printf("Serving '%s/' on 'http://%s%s'\n", dirPath, ip, address)
 	log.Fatal(ServeDir(dirPath, address, *cache))
 }
