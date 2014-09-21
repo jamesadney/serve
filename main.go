@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/skratchdot/open-golang/open"
 	"log"
 	"path/filepath"
 )
@@ -10,6 +11,7 @@ import (
 func main() {
 	port := flag.Int("p", 8080, "port to listen on")
 	cache := flag.Bool("c", false, "enable caching")
+	browser := flag.Bool("b", false, "open browser")
 
 	flag.Parse()
 
@@ -24,9 +26,14 @@ func main() {
 	ip, err := externalIP()
 	if err != nil {
 		fmt.Println(err)
-		ip = "127.0.0.1"
+		ip = "0.0.0.0"
 	}
 
-	fmt.Printf("Serving '%s/' on 'http://%s%s'\n", dirPath, ip, address)
+	url := fmt.Sprintf("http://%s%s", ip, address)
+	fmt.Printf("Serving '%s/' on '%s'\n", dirPath, url)
+	if *browser {
+		open.Run(url)
+	}
+	// Blocks here
 	log.Fatal(ServeDir(dirPath, address, *cache))
 }
